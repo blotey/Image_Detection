@@ -1,0 +1,14 @@
+name: face-detection-recognition
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - opencv
+  - numpy
+  - scikit-learn
+  - matplotlib
+  - jupyter
+  - pip
+  - pip:
+      - face_recognition
+      - tqdm
