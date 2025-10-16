@@ -1,4 +1,8 @@
-import cv2
+#.... existing code...
+try:
+    import cv2
+except Exception:
+    cv2 = None    
 import numpy as np
 from detector.face_detector import FaceDetector
 from recognizer.embeddings import EmbeddingsExtractor
