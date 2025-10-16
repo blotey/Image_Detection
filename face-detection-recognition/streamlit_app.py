@@ -10,70 +10,15 @@ SRC = os.path.join(ROOT, "src")
 if SRC not in sys.path:
     sys.path.insert(0, SRC)
 
-# Import your project modules dynamically and provide fallbacks if missing
-import importlib
-
-FaceDetector = None
-EmbeddingsExtractor = None
-FaceRecognizer = None
-
-# Try to load the project modules by name (avoids static import errors in some editors)
+# Import your project modules
 try:
-    if importlib.util.find_spec("detector.face_detector") is not None:
-        mod = importlib.import_module("detector.face_detector")
-        FaceDetector = getattr(mod, "FaceDetector", None)
-    if importlib.util.find_spec("recognizer.embeddings") is not None:
-        mod = importlib.import_module("recognizer.embeddings")
-        EmbeddingsExtractor = getattr(mod, "EmbeddingsExtractor", None)
-    if importlib.util.find_spec("recognizer.classifier") is not None:
-        mod = importlib.import_module("recognizer.classifier")
-def to_bgr_if_possible(np_img):
-    # Convert RGB -> BGR if cv2 available, otherwise return RGB (many detectors accept RGB)
-    try:
-        # import cv2 dynamically to avoid static import resolution issues in some editors
-        cv2 = importlib.import_module("cv2")
-        return cv2.cvtColor(np_img, cv2.COLOR_RGB2BGR)
-    except Exception:
-        # Fall back to a numpy channel flip if image has color channels
-        try:
-            if np_img.ndim >= 3 and np_img.shape[2] >= 3:
-                return np_img[..., ::-1]
-        except Exception:
-            pass
-        return np_img
-
-    class FaceDetector:
-        def __call__(self, img):
-            # no detection: return empty list
-            return []
-
-        def detect_faces(self, img):
-            return []
-
-        def detect(self, img):
-            return []
-
-    class EmbeddingsExtractor:
-        def extract(self, img):
-            # return a dummy zero-vector embedding
-            return np.zeros((128,), dtype=float)
-
-        def embed(self, img):
-            return self.extract(img)
-
-        def get_embedding(self, img):
-            return self.extract(img)
-
-    class FaceRecognizer:
-        def predict(self, emb):
-            return {"label": "unknown", "score": 0.0}
-
-        def classify(self, emb):
-            return self.predict(emb)
-
-        def recognize(self, emb):
-            return self.predict(emb)
-
+    from detector.face_detector import FaceDetector
+    from recognizer.embeddings import EmbeddingsExtractor
+    from recognizer.classifier import FaceRecognizer
+except Exception as e:
+    st.error(f"Failed to import project modules: {e}")
+    st.stop()   
+# Streamlit app setup
 st.set_page_config(page_title="Face Detection & Recognition", layout="centered")
 st.title("Face Detection & Recognition")
 st.write("Use your camera (browser) or upload an image. Streamlit Cloud will run this app in the browser.")
