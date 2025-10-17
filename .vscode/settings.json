@@ -3,5 +3,6 @@
         "face-detection-recognition"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "Codegeex.RepoIndex": true
 }

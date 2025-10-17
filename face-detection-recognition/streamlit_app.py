@@ -1,3 +1,4 @@
+# ...existing code...
 import sys
 import os
 import streamlit as st
@@ -26,7 +27,28 @@ except Exception as e:
             h, w = img.shape[:2]
             x0, y0 = w // 4, h // 4
             x1, y1 = 3 * w // 4, 3 * h // 4
+            # return as (x0,y0,x1,y1)
             return [(x0, y0, x1, y1)]
+
+    class EmbeddingsExtractor:
+        def __init__(self):
+            pass
+        # provide several common names to match the app's discovery logic
+        def extract(self, img):
+            return np.zeros(128, dtype=float)
+        def get_embeddings(self, img):
+            return self.extract(img)
+        def extract_embeddings(self, img):
+            return self.extract(img)
+
+    class FaceRecognizer:
+        def __init__(self):
+            pass
+        # common names used by the app
+        def recognize_face(self, emb):
+            return "Unknown"
+        def predict(self, emb):
+            return ["Unknown"]
 # Try to import cv2 once to avoid unresolved-import warnings and repeated imports
 try:
     import cv2 as _cv2
@@ -41,23 +63,7 @@ def to_bgr_if_possible(np_img):
         except Exception:
             return np_img[..., ::-1]
     return np_img[..., ::-1]
-            # return a fixed-size dummy embedding
-            return [0.0] * 128
-        def embed(self, img):
-            return self.extract(img)
-        def __call__(self, img):
-            return self.extract(img)
 
-    class FaceRecognizer:
-        def __init__(self):
-            pass
-        def predict(self, emb):
-            # simple dummy prediction
-            return {"name": "unknown", "confidence": 0.0}
-        def classify(self, emb):
-            return self.predict(emb)
-        def __call__(self, emb):
-            return self.predict(emb)
 # Streamlit app setup
 st.set_page_config(page_title="Face Detection & Recognition", layout="centered")
 st.title("Face Detection & Recognition")
@@ -66,14 +72,6 @@ st.write("Use your camera (browser) or upload an image. Streamlit Cloud will run
 face_detector = FaceDetector()
 embeddings_extractor = EmbeddingsExtractor()
 face_recognizer = FaceRecognizer()
-
-def to_bgr_if_possible(np_img):
-    # Convert RGB -> BGR if cv2 available, otherwise return RGB (many detectors accept RGB)
-    try:
-        import cv2
-        return cv2.cvtColor(np_img, cv2.COLOR_RGB2BGR)
-    except Exception:
-        return np_img[..., ::-1]
 
 def detect_faces_with_fallback(detector, img):
     # Try common method names
@@ -177,3 +175,4 @@ try:
         st.info("Embeddings extractor or recognizer API not found; skipping recognition.")
 except Exception as e:
     st.error(f"Recognition pipeline error: {e}")
+# ...existing code...
