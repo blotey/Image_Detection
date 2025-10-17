@@ -1,4 +1,3 @@
-# ...existing code...
 import sys
 import os
 import streamlit as st
@@ -51,15 +50,15 @@ except Exception as e:
             return ["Unknown"]
 # Try to import cv2 once to avoid unresolved-import warnings and repeated imports
 try:
-    import cv2 as _cv2
+    import cv2
 except Exception:
-    _cv2 = None
+    cv2 = None
 
 def to_bgr_if_possible(np_img):
     # Convert RGB -> BGR if cv2 available, otherwise flip channels
-    if _cv2 is not None:
+    if cv2 is not None:
         try:
-            return _cv2.cvtColor(np_img, _cv2.COLOR_RGB2BGR)
+            return cv2.cvtColor(np_img, cv2.COLOR_RGB2BGR)
         except Exception:
             return np_img[..., ::-1]
     return np_img[..., ::-1]
@@ -175,4 +174,3 @@ try:
         st.info("Embeddings extractor or recognizer API not found; skipping recognition.")
 except Exception as e:
     st.error(f"Recognition pipeline error: {e}")
-# ...existing code...
